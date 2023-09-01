@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
+
 @RestController
 @RequestMapping("/feeds")
 @RequiredArgsConstructor
@@ -95,5 +97,25 @@ public class FeedController {
     public FeedDto updateFeed(@PathVariable("id") Long id,
                               @RequestBody @Valid UpdateFeedDto updateFeedDto) {
         return feedService.update(id, updateFeedDto);
+    }
+
+    @GetMapping()
+    @Operation(
+            summary = "Get all news (with pagination)",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "All news (Ok)",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = FeedDto.class)
+                            )
+                    )
+            }
+    )
+    public Collection<FeedDto> getFeed(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return feedService.getFeed(page, size);
     }
 }
