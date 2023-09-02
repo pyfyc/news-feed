@@ -102,6 +102,7 @@ public class FeedController {
     @GetMapping()
     @Operation(
             summary = "Get all news (with pagination)",
+            description = "Return all news sorted by name asc.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -113,9 +114,55 @@ public class FeedController {
                     )
             }
     )
-    public Collection<FeedDto> getFeed(
+    public Collection<FeedDto> getNews(
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
-        return feedService.getFeed(page, size);
+        return feedService.getNews(page, size);
+    }
+
+    @GetMapping("/by-name")
+    @Operation(
+            summary = "Get news by name (with pagination)",
+            description = "Return all news with name containing text (name parameter) " +
+                    "ignoring case sorted by name asc.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "News by name (Ok)",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = FeedDto.class)
+                            )
+                    )
+            }
+    )
+    public Collection<FeedDto> getNewsByName(
+            @RequestParam(required = true) String name,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return feedService.getNewsByName(name, page, size);
+    }
+
+    @GetMapping("/by-desc")
+    @Operation(
+            summary = "Get news by description (with pagination)",
+            description = "Return all news with description containing text (desc parameter) " +
+                    "ignoring case sorted by name asc.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "News by description (Ok)",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = FeedDto.class)
+                            )
+                    )
+            }
+    )
+    public Collection<FeedDto> getNewsByDesc(
+            @RequestParam(required = true) String desc,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return feedService.getNewsByDesc(desc, page, size);
     }
 }
