@@ -38,13 +38,39 @@ public class FeedService {
         return feedMapper.toDto(feedRepository.save(feed));
     }
 
-    public Collection<FeedDto> getFeed(Integer page, Integer size) {
+    public Collection<FeedDto> getNews(Integer page, Integer size) {
+        Pageable pageable = getPage(page, size);
+        return feedRepository.findAllByOrderByNameAsc(pageable).stream()
+                .map(feed -> feedMapper.toDto(feed))
+                .toList();
+    }
+
+    public Collection<FeedDto> getNewsByName(String name, Integer page, Integer size) {
+        Pageable pageable = getPage(page, size);
+        return feedRepository.findByNameContainingIgnoreCaseOrderByNameAsc(name, pageable).stream()
+                .map(feed -> feedMapper.toDto(feed))
+                .toList();
+    }
+
+    public Collection<FeedDto> getNewsByDesc(String desc, Integer page, Integer size) {
+        Pageable pageable = getPage(page, size);
+        return feedRepository.findByDescriptionContainingIgnoreCaseOrderByNameAsc(desc, pageable).stream()
+                .map(feed -> feedMapper.toDto(feed))
+                .toList();
+    }
+
+    /**
+     * Return page object if page and size parameters are not null.
+     * If at least one of the parameters is null - return all pages.
+     * @param page page number (starting from 0)
+     * @param size number of items on the page
+     * @return page object
+     */
+    private Pageable getPage(Integer page, Integer size) {
         Pageable pageable = Pageable.unpaged();
         if (page != null && size != null) {
             pageable = PageRequest.of(page, size);
         }
-        return feedRepository.findAllByOrderByNameAsc(pageable).stream()
-                .map(feed -> feedMapper.toDto(feed))
-                .toList();
+        return pageable;
     }
 }
