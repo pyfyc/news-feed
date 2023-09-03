@@ -3,7 +3,7 @@
 ## Basic functions:
 
 - view news feed;
-- search news by category, name and description;
+- search by news category, name and description;
 - add/update/delete news.
 
 ## Endpoints list:
