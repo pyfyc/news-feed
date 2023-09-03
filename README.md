@@ -66,7 +66,7 @@ Update single news parameters.
 
 Request parameters:
 
-@PathVariable("id") Long id - id of the new object to be updated.
+@PathVariable("id") Long id - id of the new object to be updated.  
 @RequestBody @Valid UpdateFeedDto updateFeedDto - news updates.
 
 Responses:
@@ -80,7 +80,7 @@ Get all news (with pagination).
 
 Request parameters:
 
-@RequestParam(required = false) Integer page - page number (starts from 0).
+@RequestParam(required = false) Integer page - page number (starts from 0).  
 @RequestParam(required = false) Integer size - number of elements on the page.
 
 Responses:
@@ -93,8 +93,8 @@ Get news by name (with pagination).
 
 Request parameters:
 
-@RequestParam(required = true) String name - name of the news to be searched by (containing ignore case).
-@RequestParam(required = false) Integer page - page number (starts from 0).
+@RequestParam(required = true) String name - name of the news to be searched by (containing ignore case).  
+@RequestParam(required = false) Integer page - page number (starts from 0).  
 @RequestParam(required = false) Integer size - number of elements on the page.
 
 Responses:
@@ -107,8 +107,8 @@ Get news by description (with pagination).
 
 Request parameters:
 
-@RequestParam(required = true) String desc - description of the news to be searched by (containing ignore case).
-@RequestParam(required = false) Integer page - page number (starts from 0).
+@RequestParam(required = true) String desc - description of the news to be searched by (containing ignore case).  
+@RequestParam(required = false) Integer page - page number (starts from 0).  
 @RequestParam(required = false) Integer size - number of elements on the page.
 
 Responses:
@@ -121,8 +121,8 @@ Get news by category (with pagination).
 
 Request parameters:
 
-@RequestBody CategoryDto category - category object to be searched by.
-@RequestParam(required = false) Integer page - page number (starts from 0).
+@RequestBody CategoryDto category - category object to be searched by.  
+@RequestParam(required = false) Integer page - page number (starts from 0).  
 @RequestParam(required = false) Integer size - number of elements on the page.
 
 Responses:
