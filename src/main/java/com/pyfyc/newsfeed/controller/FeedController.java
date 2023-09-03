@@ -1,5 +1,6 @@
 package com.pyfyc.newsfeed.controller;
 
+import com.pyfyc.newsfeed.dto.CategoryDto;
 import com.pyfyc.newsfeed.dto.CreateFeedDto;
 import com.pyfyc.newsfeed.dto.FeedDto;
 import com.pyfyc.newsfeed.dto.UpdateFeedDto;
@@ -164,5 +165,32 @@ public class FeedController {
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
         return feedService.getNewsByDesc(desc, page, size);
+    }
+
+    @GetMapping("/by-cat")
+    @Operation(
+            summary = "Get news by category (with pagination)",
+            description = "Return all news of the category (category parameter) " +
+                    "sorted by name asc.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "News by category (Ok)",
+                            content = @Content(
+                                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = FeedDto.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "500",
+                            description = "Category was not found (Internal Server Error)"
+                    )
+            }
+    )
+    public Collection<FeedDto> getNewsByCat(
+            @RequestBody CategoryDto category,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        return feedService.getNewsByCat(category, page, size);
     }
 }

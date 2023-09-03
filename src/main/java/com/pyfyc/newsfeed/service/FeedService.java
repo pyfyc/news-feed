@@ -1,11 +1,15 @@
 package com.pyfyc.newsfeed.service;
 
+import com.pyfyc.newsfeed.dto.CategoryDto;
 import com.pyfyc.newsfeed.dto.CreateFeedDto;
 import com.pyfyc.newsfeed.dto.FeedDto;
 import com.pyfyc.newsfeed.dto.UpdateFeedDto;
+import com.pyfyc.newsfeed.entity.Category;
 import com.pyfyc.newsfeed.entity.Feed;
+import com.pyfyc.newsfeed.exception.CategoryNotFoundException;
 import com.pyfyc.newsfeed.exception.FeedNotFoundException;
 import com.pyfyc.newsfeed.mapper.FeedMapper;
+import com.pyfyc.newsfeed.repository.CategoryRepository;
 import com.pyfyc.newsfeed.repository.FeedRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +23,7 @@ import java.util.Collection;
 public class FeedService {
 
     private final FeedRepository feedRepository;
+    private final CategoryRepository categoryRepository;
     private final FeedMapper feedMapper;
 
     public FeedDto create(CreateFeedDto createFeedDto) {
@@ -55,6 +60,14 @@ public class FeedService {
     public Collection<FeedDto> getNewsByDesc(String desc, Integer page, Integer size) {
         Pageable pageable = getPage(page, size);
         return feedRepository.findByDescriptionContainingIgnoreCaseOrderByNameAsc(desc, pageable).stream()
+                .map(feed -> feedMapper.toDto(feed))
+                .toList();
+    }
+
+    public Collection<FeedDto> getNewsByCat(CategoryDto categoryDto, Integer page, Integer size) {
+        Pageable pageable = getPage(page, size);
+        Category category = categoryRepository.findById(categoryDto.getId()).orElseThrow(() -> new CategoryNotFoundException(categoryDto.getId()));
+        return feedRepository.findByCategoryOrderByNameAsc(category, pageable).stream()
                 .map(feed -> feedMapper.toDto(feed))
                 .toList();
     }

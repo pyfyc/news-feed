@@ -12,4 +12,5 @@ public class FeedDto {
     private String name;
     private String description;
     private LocalDate publishDate;
+    private CategoryDto category;
 }
