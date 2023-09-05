@@ -3,6 +3,7 @@ package com.pyfyc.newsfeed.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pyfyc.newsfeed.dto.CreateCategoryDto;
 import com.pyfyc.newsfeed.entity.Category;
+import com.pyfyc.newsfeed.exception.CategoryNotFoundException;
 import com.pyfyc.newsfeed.repository.CategoryRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,5 +97,18 @@ class CategoryControllerTest {
                 .andExpect(status().isOk());
 
         verify(categoryRepository, times(1)).delete(category);
+    }
+
+    /**
+     * Return 400 (Bad Request) when delete not existing category.
+     * @throws Exception
+     */
+    @Test
+    void ReturnBadRequestWhenDeleteNotExistingCategory() throws Exception {
+        Long id = 1L;
+
+        mockMvc.perform(delete("http://localhost:" + port + "/categories/{id}", id))
+                .andExpect(status().isBadRequest())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof CategoryNotFoundException));
     }
 }
