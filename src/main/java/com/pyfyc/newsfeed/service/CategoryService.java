@@ -1,5 +1,6 @@
 package com.pyfyc.newsfeed.service;
 
+import com.pyfyc.newsfeed.dto.CategoryDto;
 import com.pyfyc.newsfeed.dto.CreateCategoryDto;
 import com.pyfyc.newsfeed.entity.Category;
 import com.pyfyc.newsfeed.exception.CategoryNotFoundException;
@@ -15,7 +16,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    public CreateCategoryDto create(CreateCategoryDto createCategoryDto) {
+    public CategoryDto create(CreateCategoryDto createCategoryDto) {
         Category category = new Category();
         categoryMapper.create(category, createCategoryDto);
         return categoryMapper.toDto(categoryRepository.save(category));
