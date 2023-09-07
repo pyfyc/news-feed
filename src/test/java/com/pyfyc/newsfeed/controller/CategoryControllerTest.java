@@ -1,7 +1,6 @@
 package com.pyfyc.newsfeed.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pyfyc.newsfeed.dto.CreateCategoryDto;
 import com.pyfyc.newsfeed.entity.Category;
 import com.pyfyc.newsfeed.exception.CategoryNotFoundException;
 import com.pyfyc.newsfeed.repository.CategoryRepository;
@@ -17,6 +16,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Optional;
 
+import static com.pyfyc.newsfeed.constant.DtoConstantTest.CREATE_CATEGORY_DTO;
+import static com.pyfyc.newsfeed.constant.DtoConstantTest.CREATE_CATEGORY_DTO_INVALID_NAME;
+import static com.pyfyc.newsfeed.constant.EntityConstantTest.CATEGORY;
+import static com.pyfyc.newsfeed.constant.EntityConstantTest.ID1;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -47,20 +50,13 @@ class CategoryControllerTest {
      */
     @Test
     void ReturnOKWhenCreateCategory() throws Exception {
-        CreateCategoryDto createCategoryDto = new CreateCategoryDto();
-        createCategoryDto.setName("cat1");
-
-        Category category = new Category();
-        category.setId(1L);
-        category.setName("cat1");
-
-        when(categoryRepository.save(any(Category.class))).thenReturn(category);
+        when(categoryRepository.save(any(Category.class))).thenReturn(CATEGORY);
 
         mockMvc.perform(post("http://localhost:" + port + "/categories")
-                        .content(objectMapper.writeValueAsBytes(createCategoryDto))
+                        .content(objectMapper.writeValueAsBytes(CREATE_CATEGORY_DTO))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(createCategoryDto.getName()));
+                .andExpect(jsonPath("$.name").value(CREATE_CATEGORY_DTO.getName()));
     }
 
     /**
@@ -69,11 +65,8 @@ class CategoryControllerTest {
      */
     @Test
     void ReturnBadRequestWhenCreateCategoryWithInvalidName() throws Exception {
-        CreateCategoryDto categoryDto = new CreateCategoryDto();
-        categoryDto.setName("ca"); // Invalid name: size must be between 3 and 100
-
         mockMvc.perform(post("http://localhost:" + port + "/categories")
-                        .content(objectMapper.writeValueAsBytes(categoryDto))
+                        .content(objectMapper.writeValueAsBytes(CREATE_CATEGORY_DTO_INVALID_NAME))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException));
@@ -85,18 +78,12 @@ class CategoryControllerTest {
      */
     @Test
     void ReturnOKWhenDeleteCategory() throws Exception {
-        Long id = 1L;
+        when(categoryRepository.findById(any(Long.class))).thenReturn(Optional.of(CATEGORY));
 
-        Category category = new Category();
-        category.setId(1L);
-        category.setName("cat1");
-
-        when(categoryRepository.findById(any(Long.class))).thenReturn(Optional.of(category));
-
-        mockMvc.perform(delete("http://localhost:" + port + "/categories/{id}", id))
+        mockMvc.perform(delete("http://localhost:" + port + "/categories/{id}", ID1))
                 .andExpect(status().isOk());
 
-        verify(categoryRepository, times(1)).delete(category);
+        verify(categoryRepository, times(1)).delete(CATEGORY);
     }
 
     /**
@@ -105,9 +92,7 @@ class CategoryControllerTest {
      */
     @Test
     void ReturnBadRequestWhenDeleteNotExistingCategory() throws Exception {
-        Long id = 1L;
-
-        mockMvc.perform(delete("http://localhost:" + port + "/categories/{id}", id))
+        mockMvc.perform(delete("http://localhost:" + port + "/categories/{id}", ID1))
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof CategoryNotFoundException));
     }

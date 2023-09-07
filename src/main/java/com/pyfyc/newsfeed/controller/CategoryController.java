@@ -45,8 +45,7 @@ public class CategoryController {
             }
     )
     public CategoryDto createCategory(@RequestBody @Valid CreateCategoryDto createCategoryDto) {
-        CategoryDto categoryDto = categoryService.create(createCategoryDto);
-        return categoryDto;
+        return categoryService.create(createCategoryDto);
     }
 
     @DeleteMapping("/{id}")
