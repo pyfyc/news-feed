@@ -44,7 +44,7 @@ public class CategoryController {
                     )
             }
     )
-    public CreateCategoryDto createCategory(@RequestBody @Valid CreateCategoryDto createCategoryDto) {
+    public CategoryDto createCategory(@RequestBody @Valid CreateCategoryDto createCategoryDto) {
         return categoryService.create(createCategoryDto);
     }
 
