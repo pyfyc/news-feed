@@ -1,0 +1,301 @@
+openapi: 3.0.3
+info:
+  version: '1.0'
+  title: NewsFeedApp
+  description: News feed management web application
+servers:
+  - url: http://localhost:8080
+    description: Generated server url
+tags:
+  - name: News
+  - name: Category
+paths:
+  /api/feeds:
+    get:
+      tags:
+        - News
+      summary: Get all news (with pagination)
+      operationId: getNews
+      responses:
+        "200":
+          description: All news (Ok)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FeedDto'
+    post:
+      tags:
+        - News
+      summary: Add news
+      description: Please fill in parameters to create news
+      operationId: createFeed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFeedDto'
+        required: true
+      responses:
+        "201":
+          description: News has been added (Created)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedDto'
+        "400":
+          description: "News was not added due to failed validation (Bad Request)"
+        "404":
+          description: "News was not added due to bad category (Not Found)"
+  /api/categories:
+    post:
+      tags:
+        - Category
+      summary: Add category
+      description: Please fill in parameters to add new category
+      operationId: createCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategoryDto'
+        required: true
+      responses:
+        "201":
+          description: Category has been added (Created)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryDto'
+        "400":
+          description: "Category was not added due to failed validation (Bad Request)"
+        "406":
+          description: "Category was not added due to it already exists (Not Acceptable)"
+  /api/feeds/{id}:
+    delete:
+      tags:
+        - News
+      summary: Delete news
+      operationId: deleteFeed
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: "News has been deleted (No Content)"
+        "404":
+          description: "News was not deleted due to it was not found (Not Found)"
+    patch:
+      tags:
+        - News
+      summary: Update news parameters
+      operationId: updateFeed
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFeedDto'
+        required: true
+      responses:
+        "200":
+          description: "News has been updated (Ok)"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedDto'
+        "400":
+          description: "News was not updated due to failed validation (Bad Request)"
+        "404":
+          description: "News was not updated due to it was not found (Not Found)"
+  /api/categories/{id}:
+    delete:
+      tags:
+        - Category
+      summary: Delete category
+      operationId: deleteCategory
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        "204":
+          description: "Category has been deleted (No Content)"
+        "404":
+          description: "Category was not deleted due to it was not found (Not Found)"
+  /api/feeds/by-name:
+    get:
+      tags:
+        - News
+      summary: Get news by name (with pagination)
+      operationId: getNewsByName
+      parameters:
+        - name: name
+          description: "search by"
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: page
+          description: "page number (starting from 0)"
+          in: query
+          schema:
+            type: integer
+        - name: size
+          description: "number of items on page"
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "News by name (Ok)"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FeedDto'
+  /api/feeds/by-desc:
+    get:
+      tags:
+        - News
+      summary: Get news by description (with pagination)
+      operationId: getNewsByDesc
+      parameters:
+        - name: desc
+          description: "search by"
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: page
+          description: "page number (starting from 0)"
+          in: query
+          schema:
+            type: integer
+        - name: size
+          description: "number of items on page"
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "News by description (Ok)"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FeedDto'
+  /api/feeds/by-cat:
+    get:
+      tags:
+        - News
+      summary: Get news by category (with pagination)
+      operationId: getNewsByCat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryDto'
+        required: true
+      parameters:
+        - name: page
+          description: "page number (starting from 0)"
+          in: query
+          schema:
+            type: integer
+        - name: size
+          description: "number of items on page"
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: "News by category (Ok)"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FeedDto'
+components:
+  schemas:
+    CategoryDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          nullable: false
+          description: 'category id'
+        name:
+          type: string
+          nullable: false
+          minLength: 3
+          maxLength: 100
+          description: 'category name'
+    FeedDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 'news name'
+        description:
+          type: string
+          description: 'news description'
+        publishDate:
+          type: string
+          description: 'news creation date'
+        category:
+          $ref: '#/components/schemas/CategoryDto'
+    CreateFeedDto:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: false
+          minLength: 3
+          maxLength: 100
+        description:
+          type: string
+          nullable: false
+          minLength: 3
+          maxLength: 100
+        category:
+          $ref: '#/components/schemas/CategoryDto'
+    CreateCategoryDto:
+      type: object
+      properties:
+        name:
+          type: string
+          nullable: false
+          minLength: 3
+          maxLength: 100
+    UpdateFeedDto:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 100
+        description:
+          type: string
+          minLength: 3
+          maxLength: 100
+        category:
+          $ref: '#/components/schemas/CategoryDto'

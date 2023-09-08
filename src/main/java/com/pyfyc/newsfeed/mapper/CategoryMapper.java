@@ -15,4 +15,6 @@ public interface CategoryMapper {
     void create(@MappingTarget Category target, CreateCategoryDto source);
 
     CategoryDto toDto(Category category);
+
+    Category map(CategoryDto categoryDto);
 }
