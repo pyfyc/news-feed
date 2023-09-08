@@ -6,6 +6,10 @@
 - search by news category, name and description;
 - add/update/delete news.
 
+## OpenAPI specification:
+
+[openapi.yaml](https://github.com/pyfyc/news-feed/blob/master/openapi.yaml)
+
 ## Endpoints list:
 
 ### POST /categories
