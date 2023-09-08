@@ -16,7 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.TimeZone;
 
 @Service
 @AllArgsConstructor
@@ -27,8 +29,12 @@ public class FeedService {
     private final FeedMapper feedMapper;
 
     public FeedDto create(CreateFeedDto createFeedDto) {
-        Feed feed = new Feed();
-        feedMapper.create(feed, createFeedDto);
+        Feed feed = feedMapper.map(createFeedDto);
+
+        TimeZone timeZone = TimeZone.getDefault();
+        LocalDate localDate = LocalDate.now(timeZone.toZoneId());
+        feed.setPublishDate(localDate);
+
         return feedMapper.toDto(feedRepository.save(feed));
     }
 
@@ -76,7 +82,7 @@ public class FeedService {
      * Return page object if page and size parameters are not null.
      * If at least one of the parameters is null - return all pages.
      * @param page page number (starting from 0)
-     * @param size number of items on the page
+     * @param size number of items on page
      * @return page object
      */
     private Pageable getPage(Integer page, Integer size) {
