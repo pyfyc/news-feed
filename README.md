@@ -131,3 +131,4 @@ HTTP 200 — News by category returned (OK);
 
 ## Stack of technologies:
 Java 17, Spring Boot 3.1.2, Hibernate, PostgreSQL, Lombok, Mapstruct, Spring Doc Open Api   
+JUnit, Mockito  
